@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TaiDoc ubike info",
+  title: "TaiDoc youbike info",
   description: "",
 };
 

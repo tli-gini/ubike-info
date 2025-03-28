@@ -1,9 +1,16 @@
 // app/api/slack/youbike/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
+interface Station {
+  sna: string;
+  bikesAvailable: number;
+  parkingAvailable: number;
+  lastUpdated: string;
+}
+
 export async function POST(_: NextRequest) {
   const response = await fetch(`${process.env.BASE_URL}/api/youbike`);
-  const stations = await response.json();
+  const stations: Station[] = await response.json();
 
   if (!stations.length) {
     return NextResponse.json({
@@ -14,18 +21,18 @@ export async function POST(_: NextRequest) {
 
   const imageUrl = `${process.env.BASE_URL}/images/youbike.png`;
 
-  const blocks = stations.flatMap((station: any) => [
+  const blocks = stations.flatMap((station: Station) => [
     {
       type: "section",
       text: {
         type: "mrkdwn",
         text: `*:round_pushpin: ${station.sna}*\n:bicycle: *可借車輛:* ${station.bikesAvailable}\n:parking: *可停空位:* ${station.parkingAvailable}`,
       },
-      accessory:{
+      accessory: {
         type: "image",
         image_url: imageUrl,
-        alt_text: "cute puppy",
-      }
+        alt_text: "YouBike station",
+      },
     },
     {
       type: "context",
@@ -45,7 +52,6 @@ export async function POST(_: NextRequest) {
   });
 }
 
-// format timestamps clearly
 function formatTimestamp(timestamp: string): string {
   const year = timestamp.substring(0, 4);
   const month = timestamp.substring(4, 6);
