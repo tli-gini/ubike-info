@@ -3,9 +3,16 @@
 
   interface YouBikeApiResponse {
     sna: string;
-    sbi: number;
-    bemp: number;
+    sbi: string;
+    bemp: string;
     mday: string;
+  }
+
+  interface Station {
+    sna: string;
+    bikesAvailable: number;
+    parkingAvailable: number;
+    lastUpdated: string;
   }
   
   export async function GET() {
@@ -19,14 +26,14 @@
       "YouBike2.0_捷運新北產業園區站": "捷運新北產業園區",
     };
   
-    const stationData = data
+    const stationData : Station[] = data
       .filter((station: YouBikeApiResponse) =>
         Object.keys(targetStations).includes(station.sna)
       )
       .map((station: YouBikeApiResponse) => ({
         sna: targetStations[station.sna],
-        bikesAvailable: station.sbi,
-        parkingAvailable: station.bemp,
+        bikesAvailable: parseInt(station.sbi, 10),
+        parkingAvailable:parseInt(station.bemp, 10),                                       
         lastUpdated: station.mday,
       }));
   
