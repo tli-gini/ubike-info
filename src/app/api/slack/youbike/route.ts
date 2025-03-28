@@ -1,5 +1,5 @@
 // app/api/slack/youbike/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest,NextResponse } from "next/server";
 interface Station {
   sna: string;
   bikesAvailable: number;
@@ -7,7 +7,7 @@ interface Station {
   lastUpdated: string;
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   const response = await fetch(`${process.env.BASE_URL}/api/youbike`);
   const stations: Station[] = await response.json();
 
