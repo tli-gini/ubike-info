@@ -1,7 +1,8 @@
+// app/api/slack/youbike/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const response = await fetch(`${process.env.Base_URL}/api/youbike`);
+export async function POST(_: NextRequest) {
+  const response = await fetch(`${process.env.BASE_URL}/api/youbike`);
   const stations = await response.json();
 
   if (!stations.length) {
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const imageUrl = `ubike-info\public\images\happy puppy.png`;
+  const imageUrl = `${process.env.BASE_URL}/images/youbike.png`;
 
   const blocks = stations.flatMap((station: any) => [
     {
