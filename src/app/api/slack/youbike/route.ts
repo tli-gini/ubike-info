@@ -1,6 +1,5 @@
 // app/api/slack/youbike/route.ts
 import { NextRequest, NextResponse } from "next/server";
-
 interface Station {
   sna: string;
   bikesAvailable: number;
