@@ -7,7 +7,7 @@ interface Station {
   lastUpdated: string;
 }
 
-export async function POST(_: NextRequest) {
+export async function POST() {
   const response = await fetch(`${process.env.BASE_URL}/api/youbike`);
   const stations: Station[] = await response.json();
 
