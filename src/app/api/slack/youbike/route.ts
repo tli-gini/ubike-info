@@ -82,6 +82,11 @@ export async function POST() {
       type: "mrkdwn",
       text: `*:round_pushpin: ${station.sna}*\n:bike: *可借車輛:* ${station.bikesAvailable}\n:parking: *可停空位:* ${station.parkingAvailable}`,
     },
+    accessory: {
+      type: "image",
+      image_url: imageUrl,
+      alt_text: "YouBike image",
+    },
   }));
 
   // Compute the latest update time among all stations
@@ -91,15 +96,12 @@ export async function POST() {
 
   const updateBlock = {
     type: "section",
-    text: {
-      type: "mrkdwn",
-      text: `更新時間：${formatTimestamp(latestTimestamp)}`,
-    },
-    accessory: {
-      type: "image",
-      image_url: imageUrl,
-      alt_text: "YouBike image",
-    },
+    elements: [
+      {
+        type: "mrkdwn",
+        text: `更新時間：${formatTimestamp(latestTimestamp)}`,
+      },
+    ],
   };
 
   // Combine the station blocks
