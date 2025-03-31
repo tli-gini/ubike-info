@@ -74,7 +74,7 @@ export async function POST() {
     });
   }
 
-  const imageUrl = `${process.env.BASE_URL}/images/happy-puppy.png`;
+  const imageUrl = `${process.env.BASE_URL}/images/puppy.png`;
 
   const stationBlocks = stations.map((station) => ({
     type: "section",
@@ -88,6 +88,12 @@ export async function POST() {
       alt_text: "YouBike image",
     },
   }));
+
+  const imageBlock = {
+    type: "image",
+    image_url: imageUrl,
+    alt_text: "YouBike image",
+  };
 
   // Compute the latest update time among all stations
   const latestTimestamp = stations.reduce((latest, station) => {
@@ -106,7 +112,7 @@ export async function POST() {
   };
 
   // Combine the station blocks with the update time
-  const blocks = [...stationBlocks, updateBlock];
+  const blocks = [...stationBlocks, updateBlock, imageBlock];
 
   return NextResponse.json({
     response_type: "in_channel",
