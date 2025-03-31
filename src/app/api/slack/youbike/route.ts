@@ -42,7 +42,7 @@ export async function POST() {
             return null;
           }
           const data: YouBikeApiResponse[] = await res.json();
-          // Find the station matches our friendlyName
+          // Find the station that matches our friendlyName
           const stationData = data.find(
             (station) => formatStationName(station.sna) === target.friendlyName
           );
@@ -94,8 +94,9 @@ export async function POST() {
     return station.lastUpdated > latest ? station.lastUpdated : latest;
   }, stations[0].lastUpdated);
 
+  // Use a context block for smaller font
   const updateBlock = {
-    type: "section",
+    type: "context",
     elements: [
       {
         type: "mrkdwn",
@@ -104,7 +105,7 @@ export async function POST() {
     ],
   };
 
-  // Combine the station blocks
+  // Combine the station blocks with the update time
   const blocks = [...stationBlocks, updateBlock];
 
   return NextResponse.json({
@@ -124,16 +125,13 @@ function formatTimestamp(timestamp: string): string {
 }
 
 function formatStationName(rawName: string): string {
-  // Remove the "YouBike2.0_" prefix if present
   if (rawName.startsWith("YouBike2.0_")) {
     rawName = rawName.slice("YouBike2.0_".length);
   }
-  // If the name contains parentheses, extract the text inside
   const match = rawName.match(/\(([^)]+)\)/);
   if (match) {
     return match[1];
   }
-  // if it ends with "站", remove that ending
   if (rawName.endsWith("站")) {
     return rawName.slice(0, -1);
   }
