@@ -2,7 +2,7 @@
 
 #### TD YouBikeBot is a Slackbot built with Next.js that provides real-time YouBike station information. This Slack app is deployed on Vercel and can be accessed via the Slash Command /youbike.
 
-- 本專案利用 Next.js、Vercel 以及 Slack API 製作一個可以查詢 YouBike 資訊的 Slackbot。
+<img src="./public/images/screenshot.png" width="500" />
 
 ### Features
 
