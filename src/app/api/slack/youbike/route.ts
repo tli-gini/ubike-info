@@ -74,7 +74,7 @@ export async function POST() {
     });
   }
 
-  const imageUrl = `${process.env.BASE_URL}/images/happy puppy.png`;
+  const imageUrl = `${process.env.BASE_URL}/images/happy-puppy.png`;
 
   const stationBlocks = stations.map((station) => ({
     type: "section",
