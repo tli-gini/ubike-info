@@ -90,23 +90,20 @@ export async function POST() {
   }, stations[0].lastUpdated);
 
   const updateBlock = {
-    type: "context",
-    elements: [
-      {
-        type: "mrkdwn",
-        text: `更新時間：${formatTimestamp(latestTimestamp)}`,
-      },
-    ],
-  };
-
-  const imageBlock = {
-    type: "image",
-    image_url: imageUrl,
-    alt_text: "YouBike image",
+    type: "section",
+    text: {
+      type: "mrkdwn",
+      text: `更新時間：${formatTimestamp(latestTimestamp)}`,
+    },
+    accessory: {
+      type: "image",
+      image_url: imageUrl,
+      alt_text: "YouBike image",
+    },
   };
 
   // Combine the station blocks
-  const blocks = [...stationBlocks, updateBlock, imageBlock];
+  const blocks = [...stationBlocks, updateBlock];
 
   return NextResponse.json({
     response_type: "in_channel",
