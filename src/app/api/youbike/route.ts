@@ -1,5 +1,5 @@
 // app/api/youbike/route.ts
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 interface YouBikeApiResponse {
   sno: string;
@@ -17,26 +17,67 @@ interface Station {
   lastUpdated: string;
 }
 
+const targets = [
+  {
+    url: "https://data.ntpc.gov.tw/api/datasets/010e5b15-3823-4b20-b401-b1cf000550c5/json?page=11&size=100",
+    friendlyName: "捷運新北產業園區",
+  },
+  {
+    url: "https://data.ntpc.gov.tw/api/datasets/010e5b15-3823-4b20-b401-b1cf000550c5/json?page=4&size=100",
+    friendlyName: "泰博科技",
+  },
+];
+
 export async function GET() {
-  const res = await fetch(
-    'https://data.ntpc.gov.tw/api/datasets/010e5b15-3823-4b20-b401-b1cf000550c5/json?page=0&size=100'
-  );
-  const data: YouBikeApiResponse[] = await res.json();
+  const stations: Station[] = (
+    await Promise.all(
+      targets.map(async (target) => {
+        try {
+          const res = await fetch(target.url);
+          if (!res.ok) {
+            console.error(
+              `Failed to fetch ${target.friendlyName}: ${res.status}`
+            );
+            return null;
+          }
+          const data: YouBikeApiResponse[] = await res.json();
+          const stationData = data.find(
+            (station) => formatStationName(station.sna) === target.friendlyName
+          );
+          if (stationData) {
+            return {
+              sno: stationData.sno,
+              sna: formatStationName(stationData.sna),
+              bikesAvailable: parseInt(stationData.sbi, 10),
+              parkingAvailable: parseInt(stationData.bemp, 10),
+              lastUpdated: stationData.mday,
+            };
+          }
+          return null;
+        } catch (error) {
+          console.error(
+            `Error fetching data for ${target.friendlyName}:`,
+            error
+          );
+          return null;
+        }
+      })
+    )
+  ).filter((s): s is Station => s !== null);
 
-  const targetStations: Record<string, string> = {
-    "500209027": "泰博科技",
-    "500229015": "捷運新北產業園區",
-  };
+  return NextResponse.json(stations);
+}
 
-  const stationData: Station[] = data
-    .filter((station) => station.sno in targetStations)
-    .map((station) => ({
-      sno: station.sno,
-      sna: targetStations[station.sno],
-      bikesAvailable: parseInt(station.sbi, 10),
-      parkingAvailable: parseInt(station.bemp, 10),
-      lastUpdated: station.mday,
-    }));
-
-  return NextResponse.json(stationData);
+function formatStationName(rawName: string): string {
+  if (rawName.startsWith("YouBike2.0_")) {
+    rawName = rawName.slice("YouBike2.0_".length);
+  }
+  const match = rawName.match(/\(([^)]+)\)/);
+  if (match) {
+    return match[1];
+  }
+  if (rawName.endsWith("站")) {
+    return rawName.slice(0, -1);
+  }
+  return rawName;
 }
