@@ -82,11 +82,6 @@ export async function POST() {
       type: "mrkdwn",
       text: `*:round_pushpin: ${station.sna}*\n:bike: *可借車輛:* ${station.bikesAvailable}\n:parking: *可停空位:* ${station.parkingAvailable}`,
     },
-    accessory: {
-      type: "image",
-      image_url: imageUrl,
-      alt_text: "YouBike image",
-    },
   }));
 
   const imageBlock = {
@@ -112,7 +107,7 @@ export async function POST() {
   };
 
   // Combine the station blocks with the update time
-  const blocks = [...stationBlocks, updateBlock, imageBlock];
+  const blocks = [...stationBlocks, imageBlock, updateBlock];
 
   return NextResponse.json({
     response_type: "in_channel",
