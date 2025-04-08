@@ -35,24 +35,24 @@
 
 1. Create Your Slack App:
 
-- Visit https://api.slack.com/apps and click Create New App.
+   - Visit https://api.slack.com/apps and click Create New App.
 
-- Give your app a name (e.g., "TD YouBikeBot") and select your workspace.
+   - Give your app a name (e.g., "TD YouBikeBot") and select your workspace.
 
 2. Configure the Slash Command:
 
-- In your app's settings, navigate to Slash Commands and click Create New Command.
+   - In your app's settings, navigate to Slash Commands and click Create New Command.
 
-- Set the Command to /youbike.
+   - Set the Command to /youbike.
 
-- In the Request URL field, enter: https://youbike-info.vercel.app/api/slack/youbike
+   - In the Request URL field, enter: https://youbike-info.vercel.app/api/slack/youbike
 
-- Provide a short description (YouBike 即時報導 ꜀(^. .^꜀ )꜆੭).
+   - Provide a short description (YouBike 即時報導 ꜀(^. .^꜀ )꜆੭).
 
 3. Set OAuth & Permissions:
 
-- Under OAuth & Permissions, ensure your bot has the necessary Bot Token Scopes:
+   - Under OAuth & Permissions, ensure your bot has the necessary Bot Token Scopes:
 
-  - commands
+     - commands
 
-  - chat:write
+     - chat:write
