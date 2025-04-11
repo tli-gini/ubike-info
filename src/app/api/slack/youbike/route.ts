@@ -28,7 +28,31 @@ const targets = [
   },
 ];
 
-export async function POST() {
+export async function POST(req: Request) {
+  let formData: FormData | URLSearchParams;
+
+  try {
+    formData = await req.formData();
+  } catch (err) {
+    // Fallback: manually parse the body as URL-encoded data
+    const bodyText = await req.text();
+    formData = new URLSearchParams(bodyText);
+  }
+
+  // Now get the response_url from the parsed form data
+  const responseUrl = formData.get("response_url");
+
+  // Immediately send a loading message to Slack using response_url
+  if (responseUrl && typeof responseUrl === "string") {
+    fetch(responseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        response_type: "ephemeral",
+        text: "🚴‍♀️ TD YouBikeBot 正在查詢資料中，請稍候...",
+      }),
+    });
+  }
   // Fetch data from each target URL
   const stations: Station[] = (
     await Promise.all(
@@ -68,10 +92,18 @@ export async function POST() {
   ).filter((s): s is Station => s !== null);
 
   if (!stations.length) {
-    return NextResponse.json({
-      response_type: "ephemeral",
-      text: "抱歉，我現在找不到站點。",
-    });
+    // If no stations were found, send a final error message to Slack.
+    if (responseUrl && typeof responseUrl === "string") {
+      await fetch(responseUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          response_type: "ephemeral",
+          text: "抱歉，我現在找不到站點。",
+        }),
+      });
+    }
+    return NextResponse.json({});
   }
 
   const imageUrl = `${process.env.BASE_URL}/images/puppy.png`;
@@ -109,10 +141,19 @@ export async function POST() {
   // Combine the station blocks with the update time
   const blocks = [...stationBlocks, imageBlock, updateBlock];
 
-  return NextResponse.json({
-    response_type: "in_channel",
-    blocks,
-  });
+  // Send the final message to Slack via the response_url
+  if (responseUrl && typeof responseUrl === "string") {
+    await fetch(responseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        response_type: "in_channel",
+        blocks,
+      }),
+    });
+  }
+
+  return NextResponse.json({});
 }
 
 function formatTimestamp(timestamp: string): string {
