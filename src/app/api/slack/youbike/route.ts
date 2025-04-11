@@ -33,8 +33,7 @@ export async function POST(req: Request) {
 
   try {
     formData = await req.formData();
-  } catch (err) {
-    // Fallback: manually parse the body as URL-encoded data
+  } catch (_err) {
     const bodyText = await req.text();
     formData = new URLSearchParams(bodyText);
   }
