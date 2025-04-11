@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   try {
     formData = await req.formData();
-  } catch (_err) {
+  } catch {
     const bodyText = await req.text();
     formData = new URLSearchParams(bodyText);
   }
