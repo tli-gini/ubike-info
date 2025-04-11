@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         response_type: "ephemeral",
-        text: "🚴‍♀️ TD YouBikeBot 正在查詢資料中，請稍候...",
+        text: "🚴‍♀️ 正在查詢資料中，請稍候...",
       }),
     });
   }
@@ -152,7 +152,7 @@ export async function POST(req: Request) {
     });
   }
 
-  return NextResponse.json({});
+  return new Response("", { status: 200 });
 }
 
 function formatTimestamp(timestamp: string): string {
